@@ -20,6 +20,7 @@
 
 require 'fileutils'
 require 'rake/clean'
+require 'yaml'
 
 BOOK = ENV['REVIEW_BOOK'] || 'book'
 BOOK_PDF = BOOK + '.pdf'
@@ -38,6 +39,23 @@ end
 
 def build_all(mode)
   sh "review-compile --target=#{mode} --footnotetext --stylesheet=style.css"
+end
+
+def convert_summary
+  catalog = Hash.new {|h, k| h[k] = [] }
+  catalog['PREDEF'] = ['README.re']
+  File.read('SUMMARY.md').scan(/\((.*.md)/).flatten.each do |file|
+    case file
+    when /README/
+    when /appendix/
+      catalog['APPENDIX'] << file.ext('.re')
+    when /postdef/
+      catalog['POSTDEF'] << file.ext('.re')
+    else
+      catalog['CHAPS'] << file.ext('.re')
+    end
+  end
+  File.write(CATALOG_FILE, YAML.dump(catalog))
 end
 
 task default: :html_all
@@ -87,27 +105,37 @@ task epub: BOOK_EPUB
 
 IMAGES = FileList['images/**/*']
 OTHERS = ENV['REVIEW_DEPS'] || []
-SRC = FileList['./**/*.re', '*.rb'] + [CONFIG_FILE, CATALOG_FILE] + IMAGES + FileList[OTHERS]
+SRC = FileList['*.md'] - %w(SUMMARY.md)
+OBJ = SRC.ext('re') + [CATALOG_FILE]
+INPUT = OBJ + [CONFIG_FILE]
 SRC_EPUB = FileList['*.css']
 SRC_PDF = FileList['layouts/*.erb', 'sty/**/*.sty']
 
-file BOOK_PDF => SRC + SRC_PDF do
+rule '.re' => '.md' do |t|
+  sh "bundle exec md2review --render-link-in-footnote #{t.source} > #{t.name}"
+end
+
+file CATALOG_FILE => 'SUMMARY.md' do |t|
+  convert_summary
+end
+
+file BOOK_PDF => INPUT do
   FileUtils.rm_rf [BOOK_PDF, BOOK, BOOK + '-pdf']
   sh "review-pdfmaker #{CONFIG_FILE}"
 end
 
-file BOOK_EPUB => SRC + SRC_EPUB do
+file BOOK_EPUB => INPUT do
   FileUtils.rm_rf [BOOK_EPUB, BOOK, BOOK + '-epub']
   sh "review-epubmaker #{CONFIG_FILE}"
 end
 
-file WEBROOT => SRC do
+file WEBROOT => INPUT do
   FileUtils.rm_rf [WEBROOT]
   sh "review-webmaker #{CONFIG_FILE}"
 end
 
-file TEXTROOT => SRC do
+file TEXTROOT => INPUT do
   FileUtils.rm_rf [TEXTROOT]
 end
 
-CLEAN.include([BOOK, BOOK_PDF, BOOK_EPUB, BOOK + '-pdf', BOOK + '-epub', WEBROOT, 'images/_review_math', TEXTROOT])
+CLEAN.include([BOOK, BOOK_PDF, BOOK_EPUB, BOOK + '-pdf', BOOK + '-epub', WEBROOT, 'images/_review_math', TEXTROOT, OBJ])
