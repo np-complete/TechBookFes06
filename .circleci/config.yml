@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  aws-s3: circleci/aws-s3@1.0.4
 jobs:
   build:
     docker:
@@ -19,14 +21,21 @@ jobs:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
       - run: bundle exec rake pdf
-      - store_artifacts:
-          path: ~/repo/TBF06.pdf
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - ./TBF06.pdf
   deploy:
     docker:
-      - image: vvakame/review:3.1
-    working_directory: ~/repo
+      - image: circleci/python:2.7
     steps:
-      - run: bundle exec rake publish
+      - attach_workspace:
+          at: .
+      - aws-s3/copy:
+          from: TBF06.pdf
+          to: s3://np-complete-books/pdf/TechBookFes06.pdf
+          arguments: --acl public-read
+
 workflows:
   version: 2.1
   build-deploy:
