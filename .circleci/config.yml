@@ -21,3 +21,20 @@ jobs:
       - run: bundle exec rake pdf
       - store_artifacts:
           path: ~/repo/TBF06.pdf
+  deploy:
+    docker:
+      - image: vvakame/review:3.1
+    working_directory: ~/repo
+    steps:
+      - run: bundle exec rake publish
+workflows:
+  version: 2.1
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
