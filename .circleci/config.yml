@@ -1,0 +1,21 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: vvakame/review:3.1
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: apt install -y ruby-dev build-essential
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            - v1-dependencies-
+      - run:
+          name: install gems
+          command: bundle install --jobs=4 --retry=3 --path=vendor/bundle
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+      - run: rake pdf
