@@ -6,7 +6,7 @@ GEM
       redcarpet (> 2.0.0)
     rake (12.3.2)
     redcarpet (3.4.0)
-    review (3.1.0)
+    review (2.5.0)
       image_size
       rouge
       rubyzip
@@ -19,7 +19,7 @@ PLATFORMS
 DEPENDENCIES
   md2review
   rake
-  review (= 3.1.0)
+  review (~> 2.0)
 
 BUNDLED WITH
    1.17.2
