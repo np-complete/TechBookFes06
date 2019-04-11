@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: my-first-sam
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+  HelloWorldFunction:
+    Properties:
+      CodeUri: s3://masarakki-sam-deploy/44e26daf397a254d1533b74381211884
+      Environment:
+        Variables:
+          WEBHOOK_URL: https://example.com/webhook
+      Events:
+        Uploaded:
+          Properties:
+            Bucket:
+              Ref: Bucket
+            Events: s3:ObjectCreated:*
+          Type: S3
+      Handler: app.lambda_handler
+      Runtime: ruby2.5
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
