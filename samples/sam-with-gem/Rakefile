@@ -1,0 +1,12 @@
+namespace :sam do
+  SRC = Rake::FileList.new('/hello_world/**/*', 'template.yaml')
+
+  file 'package.yaml' => SRC do
+    sh 'sam package --template-file template.yaml --s3-bucket masarakki-sam-deploy --output-template-file packaged.yaml'
+  end
+
+  task package: 'package.yaml'
+  task deploy: :package do
+    sh 'sam deploy --template-file packaged.yaml --stack-name sam-with-gem --capabilities CAPABILITY_IAM'
+  end
+end

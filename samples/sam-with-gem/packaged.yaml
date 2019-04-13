@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: sam-with-gem
+Resources:
+  HelloWorldFunction:
+    Properties:
+      CodeUri: s3://masarakki-sam-deploy/553e51029936f8d4faa4202b24264dcb
+      Handler: app.lambda_handler
+      Runtime: ruby2.5
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
