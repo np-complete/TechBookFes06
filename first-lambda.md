@@ -97,3 +97,4 @@ end
 ![Webhookを受信](images/lambda-webhook.png)
 
 上手く動きました!!
+完成したコードは[samples/first-lambda](https://github.com/np-complete/TechBookFes06/tree/master/samples/my-first-lambda)にあります。
