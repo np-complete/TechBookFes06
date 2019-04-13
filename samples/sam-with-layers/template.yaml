@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: sam-with-layers
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Runtime: ruby2.5
+      Layers:
+        - !Ref SimpleLayer
+        - !Ref PgLayer
+  SimpleLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: s3://masarakki-sam-deploy/simple-layer-v2.zip
+      CompatibleRuntimes:
+        - ruby2.5
+  PgLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: s3://masarakki-sam-deploy/pg-layer-v1.zip
