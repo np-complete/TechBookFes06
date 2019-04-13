@@ -126,6 +126,7 @@ Resources:
 
 というエラーが出ます。これは、`pg` のGemが無事にロードでき、さらに **実際にconnectを試みて** 失敗している、つまり確実に `libpq.so` に到達していると言えるでしょう。
 実験は大成功です!!
+最終的なコードは[samples/sam-with-layer](https://github.com/np-complete/TechBookFes06/tree/master/samples/sam-with-layers)にあります。
 
 AWS Lambdaのマシンが持っていないライブラリでも、Layerを使いライブラリを渡すことによって、Gemが使えることがわかりました。
 ひとつひとつのLambda関数を小さく保つために、共有ライブラリだけではなく、C拡張をビルドするようなファイルサイズが大きなGemも、Layer側に寄せていく方が良いという思想のようです。
