@@ -1,0 +1,11 @@
+---
+PREDEF:
+- README.re
+CHAPS:
+- about-lambda.re
+- first-lambda.re
+- first-sam.re
+- sam-with-gem.re
+- layer.re
+POSTDEF:
+- postdef.re
