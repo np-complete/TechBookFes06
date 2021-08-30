@@ -41,23 +41,6 @@ def build_all(mode)
   sh "review-compile --target=#{mode} --footnotetext --stylesheet=style.css"
 end
 
-def convert_summary
-  catalog = Hash.new {|h, k| h[k] = [] }
-  catalog['PREDEF'] = ['README.re']
-  File.read('SUMMARY.md').scan(/\((.*.md)/).flatten.each do |file|
-    case file
-    when /README/
-    when /appendix/
-      catalog['APPENDIX'] << file.ext('.re')
-    when /postdef/
-      catalog['POSTDEF'] << file.ext('.re')
-    else
-      catalog['CHAPS'] << file.ext('.re')
-    end
-  end
-  File.write(CATALOG_FILE, YAML.dump(catalog))
-end
-
 task default: :html_all
 
 desc 'build html (Usage: rake build re=target.re)'
@@ -105,18 +88,14 @@ task epub: BOOK_EPUB
 
 IMAGES = FileList['images/**/*']
 OTHERS = ENV['REVIEW_DEPS'] || []
-SRC = FileList['*.md'] - %w(SUMMARY.md)
-OBJ = SRC.ext('re') + [CATALOG_FILE]
-INPUT = OBJ + [CONFIG_FILE]
+SRC = FileList['*.md']
+OBJ = SRC.ext('re')
+INPUT = OBJ + [CONFIG_FILE, CATALOG_FILE]
 SRC_EPUB = FileList['*.css']
 SRC_PDF = FileList['layouts/*.erb', 'sty/**/*.sty']
 
 rule '.re' => '.md' do |t|
   sh "bundle exec md2review --render-link-in-footnote #{t.source} > #{t.name}"
-end
-
-file CATALOG_FILE => 'SUMMARY.md' do |t|
-  convert_summary
 end
 
 file BOOK_PDF => INPUT do

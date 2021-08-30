@@ -2,7 +2,6 @@ _book
 book-text
 webroot
 .bundle
-catalog.yml
 *.re
 *.pdf
 *.html
