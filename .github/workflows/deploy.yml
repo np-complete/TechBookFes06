@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: masarakki/docker-alias@v2
+      - uses: masarakki/docker-alias@v3
         with:
           image: vvakame/review:2.5
           commands: review-pdfmaker
