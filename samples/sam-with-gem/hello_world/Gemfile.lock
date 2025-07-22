@@ -3,9 +3,9 @@ GEM
   specs:
     faraday (0.17.6)
       multipart-post (>= 1.2, < 3)
-    mini_portile2 (2.8.7)
+    mini_portile2 (2.8.9)
     multipart-post (2.4.1)
-    nokogiri (1.16.5)
+    nokogiri (1.18.9)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     racc (1.8.1)
