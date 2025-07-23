@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    pg (1.1.4)
+    pg (1.5.9)
 
 PLATFORMS
   ruby
