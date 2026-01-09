@@ -2,7 +2,7 @@ _book
 book-text
 webroot
 .bundle
-*.re
-*.pdf
-*.html
-.#*
+/*.re
+/*.pdf
+/*.html
+/.#*
