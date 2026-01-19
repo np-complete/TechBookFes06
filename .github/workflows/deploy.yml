@@ -1,10 +1,13 @@
 name: depoly
 on:
-  push:
-    branches:
-      - master
+  pull_request_target:
+    types: closed
+permissions:
+  id-token: write
+  contents: read
 jobs:
-  build:
+  deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
